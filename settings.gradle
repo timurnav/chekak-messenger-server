@@ -1,0 +1,11 @@
+pluginManagement {
+    repositories {
+        gradlePluginPortal()
+    }
+}
+rootProject.name = 'chekak-messenger'
+
+include 'messenger-server'
+include 'messenger-console-client'
+include 'messenger-core'
+

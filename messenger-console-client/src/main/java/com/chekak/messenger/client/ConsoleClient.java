@@ -19,6 +19,8 @@ public class ConsoleClient {
     public void start() throws Exception {
         SocketManager socketManager = new SocketManager(ip, port);
 
+        new ClientNameDealer(socketManager).deal(System.in);
+
         IMessageEmitter userMessageEmitter = new UserMessageEmitter(System.in);
 
         IMessageConsumer messageViewer = new MessageViewer(System.out);
@@ -35,10 +37,13 @@ public class ConsoleClient {
 
     private Thread createMessageTransmittingThread(MessageTransmitter messageTransmitter, SocketManager socketManager) {
         return new Thread(() -> {
-            messageTransmitter.transmitMessages();
-            socketManager.terminate();
-            System.out.println("Server connection lost");
-            System.exit(0);
+            try {
+                messageTransmitter.transmitMessages();
+            } catch (Exception e) {
+                socketManager.terminate();
+                System.out.println("Server connection lost");
+                System.exit(0);
+            }
         });
     }
 }

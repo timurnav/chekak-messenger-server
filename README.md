@@ -5,8 +5,7 @@ Server for chekak-messenger
 ## Howto
 
 ### build artifacts:
- ./gradlew :messenger-console-client:jar
- ./gradlew :messenger-server:jar
+ ./gradlew :messenger-console-client:jar :messenger-server:jar
 
 ### run server
 

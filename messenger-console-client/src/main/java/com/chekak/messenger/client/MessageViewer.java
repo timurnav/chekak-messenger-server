@@ -1,6 +1,7 @@
 package com.chekak.messenger.client;
 
 import com.chekak.messenger.core.IMessageConsumer;
+import com.chekak.messenger.protocol.MessageDto;
 import java.io.PrintStream;
 
 class MessageViewer implements IMessageConsumer {
@@ -12,7 +13,7 @@ class MessageViewer implements IMessageConsumer {
     }
 
     @Override
-    public void consumeMessage(String message) {
-        out.println(message);
+    public void consumeMessage(MessageDto message) {
+        out.println(message.getMessage());
     }
 }

@@ -2,6 +2,7 @@ package com.chekak.messenger.server;
 
 import com.chekak.messenger.core.MessageTransmitter;
 import com.chekak.messenger.core.SocketManager;
+import com.chekak.messenger.protocol.MessageDto;
 
 public class ClientHandler implements Runnable {
 
@@ -22,7 +23,7 @@ public class ClientHandler implements Runnable {
     }
 
     public void sendMessage(String message) {
-        socketManager.sendSocketMessage(message);
+        socketManager.sendSocketMessage(new MessageDto(message));
     }
 
     @Override

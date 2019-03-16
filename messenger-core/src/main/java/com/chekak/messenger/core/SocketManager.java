@@ -1,6 +1,10 @@
 package com.chekak.messenger.core;
 
+import com.chekak.messenger.protocol.MessageDto;
+import com.fasterxml.jackson.dataformat.xml.XmlMapper;
+import java.io.DataInput;
 import java.io.DataInputStream;
+import java.io.DataOutput;
 import java.io.DataOutputStream;
 import java.io.IOException;
 import java.net.InetAddress;
@@ -8,9 +12,11 @@ import java.net.Socket;
 
 public class SocketManager implements IMessageConsumer, IMessageEmitter {
 
+    private final XmlMapper xmlMapper = new XmlMapper();
+
     private final Socket socket;
-    private final DataInputStream is;
-    private final DataOutputStream os;
+    private final DataInput is;
+    private final DataOutput os;
     private volatile boolean isClosed;
 
     public SocketManager(InetAddress ip, int port) throws IOException {
@@ -24,33 +30,35 @@ public class SocketManager implements IMessageConsumer, IMessageEmitter {
     }
 
     @Override
-    public void consumeMessage(String message) {
+    public void consumeMessage(MessageDto message) {
         sendSocketMessage(message);
     }
 
     @Override
-    public String nextMessage() {
+    public MessageDto nextMessage() {
         return nextSocketMessage();
     }
 
-    public void sendSocketMessage(String message) {
+    public void sendSocketMessage(MessageDto message) {
         if (isClosed) {
             throw new CannotSendMessageException("Connection was closed");
         }
         try {
-            os.writeUTF(message);
+            String rawMessage = xmlMapper.writeValueAsString(message);
+            os.writeUTF(rawMessage);
         } catch (IOException e) {
             terminate();
             throw new CannotSendMessageException(e);
         }
     }
 
-    public String nextSocketMessage() {
+    public MessageDto nextSocketMessage() {
         if (isClosed) {
             throw new CannotReceiveMessageException("Connection was closed");
         }
         try {
-            return is.readUTF();
+            String rawMessage = is.readUTF();
+            return xmlMapper.readValue(rawMessage, MessageDto.class);
         } catch (IOException e) {
             terminate();
             throw new CannotReceiveMessageException(e);
@@ -60,8 +68,6 @@ public class SocketManager implements IMessageConsumer, IMessageEmitter {
     public void terminate() {
         isClosed = true;
         try {
-            is.close();
-            os.close();
             socket.close();
         } catch (IOException e) {
             e.printStackTrace();

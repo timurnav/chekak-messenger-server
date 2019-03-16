@@ -1,5 +1,7 @@
 package com.chekak.messenger.core;
 
+import com.chekak.messenger.protocol.MessageDto;
+
 public class MessageTransmitter {
 
     private final IMessageEmitter messageEmitter;
@@ -13,7 +15,7 @@ public class MessageTransmitter {
     public void transmitMessages() {
         while (true) {
             try {
-                String message = messageEmitter.nextMessage();
+                MessageDto message = messageEmitter.nextMessage();
                 messageConsumer.consumeMessage(message);
             } catch (Exception e) {
                 throw new MessageTransmittingException(e);

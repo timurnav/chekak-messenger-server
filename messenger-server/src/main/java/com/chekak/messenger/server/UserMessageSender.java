@@ -1,6 +1,7 @@
 package com.chekak.messenger.server;
 
 import com.chekak.messenger.core.IMessageConsumer;
+import com.chekak.messenger.protocol.MessageDto;
 
 class UserMessageSender implements IMessageConsumer {
 
@@ -14,7 +15,7 @@ class UserMessageSender implements IMessageConsumer {
     }
 
     @Override
-    public void consumeMessage(String message) {
-        chat.broadcast(currentUserName + " : " + message, currentUserName);
+    public void consumeMessage(MessageDto message) {
+        chat.broadcast(currentUserName + " : " + message.getMessage(), currentUserName);
     }
 }

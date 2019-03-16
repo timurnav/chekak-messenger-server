@@ -1,6 +1,7 @@
 package com.chekak.messenger.client;
 
 import com.chekak.messenger.core.IMessageEmitter;
+import com.chekak.messenger.protocol.MessageDto;
 import java.io.InputStream;
 import java.util.Scanner;
 
@@ -13,7 +14,7 @@ class UserMessageEmitter implements IMessageEmitter {
     }
 
     @Override
-    public String nextMessage() {
-        return scanner.nextLine();
+    public MessageDto nextMessage() {
+        return new MessageDto(scanner.nextLine());
     }
 }

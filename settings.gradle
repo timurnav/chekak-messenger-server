@@ -9,4 +9,5 @@ include 'messenger-server'
 include 'messenger-console-client'
 include 'messenger-core'
 include 'messenger-protocol'
+include 'messenger-web-client'
 

@@ -14,19 +14,16 @@ import reactor.core.publisher.ReplayProcessor;
 public class ServerMain {
 
     public static void main(String[] args) {
-        ReplayProcessor<String> replyProcessor = ReplayProcessor.create();
-        Flux<String> flux = replyProcessor.replay(10).autoConnect();
-        FluxSink<String> sink = replyProcessor.sink();
+        ReplayProcessor<Payload> replyProcessor = ReplayProcessor.create();
+        Flux<Payload> flux = replyProcessor.replay(10).autoConnect();
+        FluxSink<Payload> sink = replyProcessor.sink();
 
         RSocketFactory.receive()
                 .acceptor((setup, sendingSocket) -> {
                     AbstractRSocket rSocket = new AbstractRSocket() {
                         @Override
                         public Flux<Payload> requestChannel(Publisher<Payload> payloads) {
-                            Flux
-                                    .from(payloads)
-                                    .map(Payload::getDataUtf8)
-                                    .subscribe(sink::next);
+                            Flux.from(payloads).subscribe(sink::next);
                             return flux.map(DefaultPayload::create);
                         }
                     };

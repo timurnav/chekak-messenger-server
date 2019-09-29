@@ -7,10 +7,13 @@ import java.io.IOException;
 
 public class MessageConverter {
 
-    private final ObjectMapper objectMapper = new ObjectMapper()
+    private MessageConverter() {
+    }
+
+    private static final ObjectMapper objectMapper = new ObjectMapper()
             .configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, false);
 
-    public <T extends Message> String serialize(T obj) {
+    public static <T extends Message> String serialize(T obj) {
         try {
             return objectMapper.writeValueAsString(obj);
         } catch (JsonProcessingException e) {
@@ -18,7 +21,7 @@ public class MessageConverter {
         }
     }
 
-    public <T extends Message> T deserialize(String json, Class<T> type) {
+    public static <T extends Message> T deserialize(String json, Class<T> type) {
         try {
             return objectMapper.readValue(json, type);
         } catch (IOException e) {
